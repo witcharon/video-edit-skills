@@ -62,8 +62,8 @@ What the video looks like is decided per project in `style_guide.md` (`reference
    - Critique against the style guide and the reference (motion-studio `references/critique.md`) and fix the worst three before any long render.
    - Check: nothing over the face, readable at phone size, nothing idle, every word on screen spoken.
 8. **Render.**
-   - `npx remotion render src/index.ts Main out/video.mp4 --muted --concurrency=4 --hardware-acceleration=if-possible`, in the background.
-   - For a long-video preview, add `--scale=0.6667` (720p).
+   - `npx remotion render src/index.ts Main out/video.mp4 --muted --concurrency=4 --timeout=180000 --hardware-acceleration=if-possible`, in the background. The first seek into a long base video can take over a minute, so keep the raised `--timeout`.
+   - For a long-video preview, add `--scale=0.75` (1440×810). The scale must give whole-pixel sizes: `0.6667` fails on 1080 (720.036).
    - Motion blur renders only while something moves (the timeline's windows). Stretches listed in `FAST` get 14 shutter samples.
    - To fix a stretch, re-render it with `--frames=a-b` and splice it in: `python3 $MS/scripts/splice.py out/video.mp4 out/video_b.mp4 out/patch.mp4@<start_s>`.
 9. **Sound.**

@@ -58,7 +58,7 @@ Tools you need:
 3. **Look:** the skill reads your brand, your reference and the footage, then writes `style_guide.md`, `look.json` and `src/fonts.ts`, and shows you one still.
 4. **Moments:** it lists the moments with their spoken words and times, keeping few.
 5. **Build:** it builds them in the template and checks stills before rendering.
-6. **Render and master:** it renders (a 720p preview for long videos), adds the sound, masters and checks sync.
+6. **Render and master:** it renders (a 1440×810 preview for long videos), adds the sound, masters and checks sync.
 7. **Report:** it tells you what was measured and what you should listen to.
 
 ## Credits
