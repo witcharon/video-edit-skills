@@ -19,7 +19,7 @@ Copy it next to the cut: `cp -R ~/.claude/skills/longform-video-edit/template <e
 ```sh
 npm run dev                                     # Studio
 npm run stills -- 12.5 105                      # check frames → out/stills/
-npx remotion render src/index.ts Main out/video.mp4 --muted --concurrency=4 --timeout=180000 --hardware-acceleration=if-possible   # add --scale=0.75 for a 1440×810 preview
+TMPDIR="$PWD/.tmp" npx remotion render src/index.ts Main out/video.mp4 --muted --concurrency=4 --timeout=180000 --hardware-acceleration=if-possible   # add --scale=0.75 for a 1440×810 preview
 python3 audio.py out/voice.wav out/score.wav
 python3 ~/.claude/skills/motion-studio/scripts/mux.py out/video.mp4 out/score.wav ../final.mp4 --lufs -14 --tp -1.5
 ```
