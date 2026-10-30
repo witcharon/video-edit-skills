@@ -10,7 +10,7 @@ mkdirSync(out, { recursive: true });
 // The bundle copies public/ (the base video can be gigabytes): build it next to the project, not in the system temp folder, and delete it after.
 process.env.TMPDIR = path.join(root, ".tmp");
 mkdirSync(process.env.TMPDIR, { recursive: true });
-const serveUrl = await bundle({ entryPoint: path.join(root, "src/index.ts"), rspack: true });
+const serveUrl = await bundle({ entryPoint: path.join(root, "src/index.ts"), rspack: true, symlinkPublicDir: true });
 const composition = await selectComposition({ serveUrl, id: "Main" });
 for (const s of process.argv.slice(2)) {
   const frame = Math.round(Number(s) * composition.fps);

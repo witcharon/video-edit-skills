@@ -63,8 +63,14 @@ What the video looks like is decided per project in `style_guide.md` (`reference
    - Check: nothing over the face, readable at phone size, nothing idle, every word on screen spoken.
 8. **Render.**
    - `TMPDIR="$PWD/.tmp" npx remotion render src/index.ts Main out/video.mp4 --muted --concurrency=4 --timeout=180000 --hardware-acceleration=if-possible`, in the background. The first seek into a long base video can take over a minute, so keep the raised `--timeout`.
-   - Keep `TMPDIR` on the project's disk: Remotion's bundle copies `public/`, base video included, into the temp folder on every run, and a small system disk fills up mid-render ("Failed to fetch … disk space is low").
+   - Keep `TMPDIR` on the project's disk. `OffthreadVideo` downloads the whole base video from Remotion's own server into the temp folder before the first frame, and the Node `bundle()` copies `public/` unless `symlinkPublicDir: true` (the CLI links it). On a small system disk that fails mid-render ("Failed to fetch … disk space is low").
+   - A symlinked `base.mp4` that points outside `public/` gets a 404 from Remotion's server. Use an APFS clone (`cp -c`) instead; it takes no space.
    - For a long-video preview, add `--scale=0.75` (1440×810). The scale must give whole-pixel sizes: `0.6667` fails on 1080 (720.036).
+   - A final at the source's resolution is slow through Remotion, so tell the user how long it will take before you start.
+     - Headless Chrome draws in software. A 30-minute film at 4K (`--scale=2` on a 1080 composition) runs at ~1.3 fps on an M4, about 11 h.
+     - Rendering only the frames that carry the edit layer and splicing them into a 4K cut still took ~6 h. It also hit two traps: a `<Freeze>` frame is clamped to the composition's duration, and an ffmpeg concat `outpoint` between two frames shifts the next file by half a frame.
+     - For a long video, plan the layer as short graphic clips that ffmpeg lays over the source-resolution cut. Earlier 4K finals made that way took minutes.
+   - Raise `--timeout` to cover the base video's download: `OffthreadVideo` pulls the whole file first (18 GB at ~16 MB/s from an external disk). Iterate on the 1080 preview, because every render downloads the base again.
    - Motion blur renders only while something moves (the timeline's windows). Stretches listed in `FAST` get 14 shutter samples.
    - To fix a stretch, re-render it with `--frames=a-b` and splice it in: `python3 $MS/scripts/splice.py out/video.mp4 out/video_b.mp4 out/patch.mp4@<start_s>`.
 9. **Sound.**
